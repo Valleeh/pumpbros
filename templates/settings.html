@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Pump Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <div class="exercise-buttons">
+          <button onclick="window.location.href='/'">Main</button>
+          <button onclick="window.location.href='/view_csv'">Edit Entrys</button>
+        </div>
+      <section id="addWorkout">
+        <h2>Add a New Workout</h2>
+          <form id="addWorkoutForm" action="/add_workout" method="post">
+              <input type="text" id="newWorkoutName" name="workoutName" required>
+              <input type="submit" value="Add Workout">
+          </form>
+      </section>
+      <div>
+      <h2>Add Pump Buddy</h2>
+      <form method="POST" action="/settings">
+        <input type="text" name="buddyName" placeholder="Buddy Name" required>
+        <button type="submit">Add Buddy</button>
+      </form>
+    <!-- List existing buddies -->
+    <div id="buddyList">
+        {% for buddy in buddies %}
+        <div class="buddy-item">
+            {{ buddy.name }}
+            <!-- Add delete functionality if needed -->
+        </div>
+        {% endfor %}
+    </div>
+</div>
+      <div>
+      <h2>Delete Workout</h2>
+        <!-- Exercise Buttons -->
+        <div class="exercise-buttons">
+    {% for workout in workouts %}
+<form action="/remove_workout" method="post">
+    <input type="hidden" name="workoutId" value="{{ workout.id }}">
+    <input type="submit" value="Delete {{ workout.name }}">
+</form>
+
+    {% endfor %}
+      </div>
+      </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

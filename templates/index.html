@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Gym Pump Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <div class="exercise-buttons">
+        <button onclick="window.location.href='/settings'">Settings</button>
+        </div>
+        <div class="exercise-buttons">
+    {% for workout in workouts %}
+    <div class="workout-item" id="workout-item-{{ workout.id }}">
+        <button type="button" onclick="showForm('{{ workout.name }}')">{{ workout.name }}</button>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+        <!-- Exercise Form -->
+        <div id="exerciseForm" style="display:none;">
+            <h2 id="exerciseTitle">Exercise Name</h2>
+            <form id="workoutForm" onsubmit="return false;" >
+                <input type="hidden" id="exerciseInput" name="exercise">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" name="weight" pattern="\d*" required>
+                <label for="reps">Reps:</label>
+                <input type="number" id="reps" name="reps" pattern="\d*" required>
+<label>Pump Buddy:</label>
+    <div id="pumpBuddyButtons">
+        {% for buddy in buddies %}
+        <button type="button" class="buddy-button" onclick="submitWorkoutWithBuddy('{{ buddy.name }}')">{{ buddy.name }}</button>
+        <button type="button" class="buddy-button" onclick="prefillWorkoutForm('{{ buddy.name }}')">Prefill {{ buddy.name }}</button>
+        {% endfor %}
+    </div>
+    <div id="formMessage" class="form-message"></div>
+            </form>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

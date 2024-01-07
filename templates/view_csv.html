@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>CSV Content</title>
+</head>
+<body>
+        <div class="exercise-buttons">
+          <button onclick="window.location.href='/'">Main</button>
+        </div>
+    <table>
+        <tr>
+            <th>Timestamp</th>
+            <th>Exercise</th>
+            <th>Weight</th>
+            <th>Reps</th>
+            <th>Buddy</th>
+            <th>Action</th>
+        </tr>
+        {% for row in data_list %}
+
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td><a href="/delete_entry/{{ loop.index0 }}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

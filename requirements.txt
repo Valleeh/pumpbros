@@ -1,3 +1,5 @@
-dotenv
+python-dotenv
 Flask-SQLAlchemy
 flask
+mysqlclient
+

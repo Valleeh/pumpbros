@@ -4,44 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Gym Pump Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+
 </head>
-<body>
-    <main>
-        <div class="exercise-buttons">
-        <button onclick="window.location.href='/settings'">Settings</button>
+<body class="bg-gray-800 text-white">
+
+    <main class="p-4" x-data="{ selectedExercise: null, showExerciseForm: false }">
+        <!-- Settings Button -->
+        <div class="mb-4">
+            <button @click="window.location.href='/settings'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
+                Settings
+            </button>
         </div>
-        <div class="exercise-buttons">
-    {% for workout in workouts %}
-    <div class="workout-item" id="workout-item-{{ workout.id }}">
-        <button type="button" onclick="showForm('{{ workout.name }}')">{{ workout.name }}</button>
-    </div>
-    {% endfor %}
-</div>
 
-
+        <!-- Workout Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for workout in workouts %}
+                <div id="workout-item-{{ workout.id }}">
+                    <button type="button" @click="selectedExercise = '{{ workout.name }}'; showExerciseForm = true" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
+                        {{ workout.name }}
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
 
         <!-- Exercise Form -->
-        <div id="exerciseForm" style="display:none;">
-            <h2 id="exerciseTitle">Exercise Name</h2>
-            <form id="workoutForm" onsubmit="return false;" >
-                <input type="hidden" id="exerciseInput" name="exercise">
-                <label for="weight">Weight (kg):</label>
-                <input type="number" id="weight" name="weight" pattern="\d*" required>
-                <label for="reps">Reps:</label>
-                <input type="number" id="reps" name="reps" pattern="\d*" required>
-<label>Pump Buddy:</label>
-    <div id="pumpBuddyButtons">
-        {% for buddy in buddies %}
-        <button type="button" class="buddy-button" onclick="submitWorkoutWithBuddy('{{ buddy.name }}')">{{ buddy.name }}</button>
-        <button type="button" class="buddy-button" onclick="prefillWorkoutForm('{{ buddy.name }}')">Prefill {{ buddy.name }}</button>
-        {% endfor %}
-    </div>
-    <div id="formMessage" class="form-message"></div>
+        <div x-show="showExerciseForm" class="mt-4 p-4 bg-gray-700 rounded shadow-lg">
+            <h2 class="text-lg font-semibold" x-text="selectedExercise"></h2>
+            <form id="workoutForm" @submit.prevent="submitWorkout" class="mt-4">
+                <input type="hidden" id="exerciseInput" name="exercise" x-model="selectedExercise">
+                <div class="mb-3">
+                    <label for="weight" class="font-bold">Weight (kg):</label>
+                    <div class="flex items-center">
+                        <input type="number" id="weight" name="weight" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" required step="5">
+                        <div class="ml-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button type="button" @click="increment('weight')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded">+</button>
+                                <button type="button" @click="decrement('weight')" class="text-lg bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">-</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="reps" class="font-bold">Reps:</label>
+                    <div class="flex items-center">
+                        <input type="number" id="reps" name="reps" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
+                        <div class="ml-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button type="button" @click="increment('reps')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded">+</button>
+                                <button type="button" @click="decrement('reps')" class="text-lg bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">-</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label class="font-bold">Pump Buddy:</label>
+                    <div>
+                        {% for buddy in buddies %}
+                            <div class="flex flex-row gap-2 mb-2">
+                                <button type="button" @click="prefillWorkoutForm('{{ buddy.name }}')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded w-1/2">
+                                    Prefill {{ buddy.name }}
+                                </button>
+                                <button type="button" @click="submitWorkoutWithBuddy('{{ buddy.name }}')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded w-1/2">
+                                    {{ buddy.name }}
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+
+                <div id="formMessage" class="form-message"></div>
             </form>
         </div>
     </main>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </body>
 </html>

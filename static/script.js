@@ -66,3 +66,25 @@ function updateWeightValue(value) {
   document.getElementById('weightValue').textContent = `Current: ${value}kg`;
   document.getElementById('weight') = value;
 }
+
+function increment(id) {
+    var input = document.getElementById(id);
+    var currentValue = parseInt(input.value, 10) || 0;
+    input.value = currentValue + parseInt(input.step, 10);
+}
+
+function decrement(id) {
+    var input = document.getElementById(id);
+    var currentValue = parseInt(input.value, 10) || 0;
+    input.value = currentValue - parseInt(input.step, 10);
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+      console.log('ServiceWorker registration successful with scope:', registration.scope);
+    }, (err) => {
+      console.log('ServiceWorker registration failed:', err);
+    });
+  });
+}

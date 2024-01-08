@@ -4,18 +4,26 @@
 
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 from datetime import datetime
 import csv
 
 app = Flask(__name__)
+import os
 
-user, password = 'vallah', 'dyBJdxW4ibKWUJrtuvBj'
-host = 'vallah.mysql.pythonanywhere-services.com'
-db = 'vallah$dbFlask' # dbFlask was created as a PythonAnywhere MySQL database
+user = os.getenv('DATABASE_USER')
+password = os.getenv('DATABASE_PASSWORD')
+host = os.getenv('DATABASE_HOST')
+db = os.getenv('DATABASE_DB')
 
-# connection string: mysql://user:pword@host/db
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@{2}/{3}'.format(user, password, host, db)
+
+# Connection string: mysql://user:pword@host/db
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{user}:{password}@{host}/{db}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Add pool_pre_ping to handle disconnections gracefully
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping': True}
+
 db = SQLAlchemy(app)
 app.debug = True
 

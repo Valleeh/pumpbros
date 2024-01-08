@@ -1,4 +1,4 @@
-![Logo](static/512_logo.jpg "Optional title")
+![Logo](static/512_logo.png)
 # Pump Bros Weight Lifting Tracker
 
 Pump Bros is a simple, self-hosted Progressive Web App (PWA) for fitness enthusiasts who value privacy and wish to track their weight lifting progress. It offers straightforward functionality to manage workouts, pump buddies, and session records.

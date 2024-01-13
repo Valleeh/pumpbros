@@ -6,9 +6,9 @@ const urlsToCache = [
     '/static/style.css',
     '/192_logo.jpg',
     '/512_logo.png',
-    '/templates/index.html',
-    '/templates/settings.html',
-    '/templates/view_csv.html'
+    'index.html',
+    'settings.html',
+    'view_csv.html'
 ];
 
 // Install the service worker and cache the assets

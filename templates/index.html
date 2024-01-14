@@ -16,7 +16,7 @@
     <main class="p-4" x-data="{ selectedExercise: null, showExerciseForm: false }">
         <!-- Settings Button -->
         <div class="mb-4">
-            <button @click="window.location.href='/settings'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
+            <button @click="window.location.href='/{{ instance_name }}/settings'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
                 Settings
             </button>
         </div>
@@ -63,6 +63,18 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label for="rpe" class="font-bold">RPE:</label>
+                    <div class="flex items-center">
+                        <input type="number" id="rpe" name="rpe" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
+                        <div class="ml-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button type="button" @click="increment('rpe')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded">+</button>
+                                <button type="button" @click="decrement('rpe')" class="text-lg bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">-</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mb-3">
                     <label class="font-bold">Pump Buddy:</label>
@@ -86,8 +98,12 @@
             </form>
         </div>
     </main>
-
+    <script>
+        var instanceName = "{{ instance_name }}";
+    </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
 
 </body>
 </html>

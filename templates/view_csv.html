@@ -9,9 +9,15 @@
 <body class="bg-gray-800 text-white">
 
     <div class="p-4">
-        <div class="mb-4">
-            <button onclick="window.location.href='/'" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <div class="flex justify-between mb-4">
+            <!-- Main Button with Dynamic Instance Name -->
+            <button onclick="window.location.href='/{{ instance_name }}/'" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Main
+            </button>
+
+            <!-- Download CSV Button -->
+            <button onclick="window.location.href='/{{ instance_name }}/download_csv'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Download CSV
             </button>
         </div>
 
@@ -34,12 +40,15 @@
                         <td class="px-6 py-4">{{ row[2] }}</td>
                         <td class="px-6 py-4">{{ row[3] }}</td>
                         <td class="px-6 py-4">{{ row[4] }}</td>
-                        <td class="px-6 py-4"><a href="/delete_entry/{{ loop.index0 }}" class="text-blue-400 hover:text-blue-600">Delete</a></td>
+                        <td class="px-6 py-4"><a href="/{{ instance_name }}/delete_entry/{{ loop.index0 }}" class="text-blue-400 hover:text-blue-600">Delete</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+<script>
+    var instanceName = "{{ instance_name }}";
+</script>
 
 </body>
 </html>

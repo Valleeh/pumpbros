@@ -4,11 +4,8 @@ const urlsToCache = [
     '/',
     '/static/script.js',
     '/static/style.css',
-    '/192_logo.jpg',
-    '/512_logo.png',
-    'index.html',
-    'settings.html',
-    'view_csv.html'
+    '/static/192_logo.jpg',
+    '/static/512_logo.png',
 ];
 
 // Install the service worker and cache the assets

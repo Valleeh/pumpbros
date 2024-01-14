@@ -7,23 +7,24 @@ function showForm(exerciseName) {
   window.scrollTo(0, document.body.scrollHeight); // Scroll to the form
 }
 function prefillWorkoutForm(buddy) {
-  var exercise = document.getElementById('exerciseInput').value;
-  fetch(`/get_latest_workout?exercise=${exercise}&buddy=${buddy}`)
+    var exercise = document.getElementById('exerciseInput').value;
+    fetch(`/${window.instanceName}/get_latest_workout?exercise=${exercise}&buddy=${buddy}`)
     .then(response => response.json())
     .then(data => {
-      document.getElementById('weight').value = data.weight;
-      document.getElementById('reps').value = data.reps;
-      // Assuming you want to prefill the exercise and buddy as well
+        document.getElementById('weight').value = data.weight;
+        document.getElementById('reps').value = data.reps;
+        // Additional code to prefill exercise and buddy, if needed
     })
     .catch(error => {
-      console.error('Error fetching latest workout:', error);
+        console.error('Error fetching latest workout:', error);
     });
-}
+};
+
 function submitWorkoutWithBuddy(buddyName) {
   const formData = new FormData(document.getElementById('workoutForm'));
   formData.append('pumpBuddy', buddyName); // Append the selected buddy to the form data
 
-  fetch('/submit_workout', {
+    fetch(`/${instanceName}/submit_workout`, {
     method: 'POST',
     body: formData
   })

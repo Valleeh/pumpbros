@@ -88,7 +88,8 @@
                         <select id="workoutType" name="workoutType" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-gray-300">
                             <option value="">Select Workout Type</option>
                             {% for workouttype in workouttypes %}
-                                <option value="{{ workouttype.id }}" {% if workouttype.id == workout.kind_of_workout %}selected{% endif %}>{{ workouttype.name }}</option>
+                            alert("{{workouttype.id}} == {{workout.workout_type}}")
+                                <option value="{{ workouttype.id }}" {% if workouttype.id == workout.workout_type %}selected{% endif %}>{{ workouttype.name }}</option>
                             {% endfor %}
                         </select>
                         <input type="submit" value="Update" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer self-start md:self-auto">

@@ -31,7 +31,7 @@ class Workout(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     inkrement = db.Column(db.Integer, nullable=False)
-    kind_of_workout = db.Column(db.Integer, nullable=False)
+    workout_type = db.Column(db.Integer, nullable=False)
     instance_name = db.Column(db.String(80), nullable=False)  # New column for instance name
 
 class PumpBuddy(db.Model):

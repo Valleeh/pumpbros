@@ -18,22 +18,26 @@
 --
 -- Table structure for table `pump_buddy`
 --
--- Table structure for table `pump_buddy`
+
 DROP TABLE IF EXISTS `pump_buddy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pump_buddy` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(80) NOT NULL,
-  `instance_name` varchar(80) NOT NULL,  -- Added column
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
 -- Dumping data for table `pump_buddy`
+--
+
 LOCK TABLES `pump_buddy` WRITE;
-INSERT INTO `pump_buddy` VALUES 
-(4,'Frae', 'default'),  -- Added default instance_name
-(1,'Josef', 'default'),
-(2,'Valle', 'default');
+/*!40000 ALTER TABLE `pump_buddy` DISABLE KEYS */;
+INSERT INTO `pump_buddy` VALUES (4,'Frae'),(3,'Frazzer'),(1,'Josef'),(2,'Valle');
+/*!40000 ALTER TABLE `pump_buddy` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -46,42 +50,17 @@ DROP TABLE IF EXISTS `workout`;
 CREATE TABLE `workout` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(80) NOT NULL,
-  `inkrement` int NOT NULL,
-  `kind_of_workout` int NOT NULL,
-  `instance_name` varchar(80) NOT NULL,  -- Added columna
-  PRIMARY KEY (`id`
-    )
-) ENGINE=InnoDB AUTO_INCREMENT=
-34 DEFAULT CHARSET=utf8mb3;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Dumping data for table `workout`
 --
 
-
 LOCK TABLES `workout` WRITE;
 /*!40000 ALTER TABLE `workout` DISABLE KEYS */;
-INSERT INTO `workout` VALUES 
-(1,'BenchPress',5,0,"default"),
-(2,'Squats',5,0,"default"),
-(3,'Deadlift',5,0,"default"),
-(19,'Sweatme bench lift',5,0,"default"),
-(20,'Low bar',5,0,"default"),
-(21,'wide lat pulldown',5,0,"default"),
-(22,'rvrs btrfly retro machine',5,0,"default"),
-(23,'bicep hammerstrength',1,0,"default"),
-(24,'Flachbank kurzhantelen drücken',1,1,"default"),
-(25,'schrägbank kurzhanteln drücken',1,1,"default"),
-(26,'arnolds seated',1,0,"default"),
-(27,'Ass',5,0,"default"),
-(28,'beinbizip pink',5,0,"default"),
-(29,'Bein biceps red',5,0,"default"),
-(30,'21hs legpress',5,0,"default"),
-(31,'good girl',5,0,"default"),
-(32,'Bad Girl',5,0,"default"),
-(33,'wade',5,0,"default"),
+INSERT INTO `workout` VALUES (1,'BenchPress'),(2,'Squats'),(3,'Deadlift'),(19,'Sweatme bench lift'),(20,'Low bar'),(21,'wide lat pulldown'),(22,'rvrs btrfly retro machine'),(23,'bicep hammerstrength'),(24,'Flachbank kurzhantelen drücken'),(25,'schrägbank kurzhanteln drücken'),(26,'arnolds seated'),(27,'Ass'),(28,'beinbizip pink'),(29,'Bein biceps red'),(30,'21hs legpress'),(31,'good girl'),(32,'Bad Girl'),(33,'wade');
 /*!40000 ALTER TABLE `workout` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

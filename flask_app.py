@@ -7,6 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from datetime import datetime
 import csv
+from flask_migrate import Migrate
+
+
+
 
 app = Flask(__name__)
 import os
@@ -27,6 +31,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping': True}
 db = SQLAlchemy(app)
 app.debug = True
 
+migrate = Migrate(app, db)
 
 
 def create_database():

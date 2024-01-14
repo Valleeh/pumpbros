@@ -80,7 +80,7 @@ INSERT INTO `workout` VALUES
 (30,'21hs legpress',5,0,"default"),
 (31,'good girl',5,0,"default"),
 (32,'Bad Girl',5,0,"default"),
-(33,'wade',5,0,"default"),
+(33,'wade',5,0,"default");
 /*!40000 ALTER TABLE `workout` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -49,8 +49,7 @@ CREATE TABLE `workout` (
   `inkrement` int NOT NULL,
   `kind_of_workout` int NOT NULL,
   `instance_name` varchar(80) NOT NULL,  -- Added columna
-  PRIMARY KEY (`id`
-    )
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=
 34 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;

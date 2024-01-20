@@ -31,10 +31,10 @@
             });
         </script>
         </div>
-<form id="addWorkoutTypeForm" action="/{{ instance_name }}/add_workout_type" method="post" class="flex flex-col md:flex-row gap-2">
-    <input type="text" name="typeName" placeholder="New Workout Type" class="flex-1 border border-gray-600 rounded px-3 py-2 bg-gray-800 text-gray-300" required>
-    <input type="submit" value="Add Type" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-</form>
+        <form id="addWorkoutTypeForm" action="/{{ instance_name }}/add_workout_type" method="post" class="flex flex-col md:flex-row gap-2">
+            <input type="text" name="typeName" placeholder="New Workout Type" class="flex-1 border border-gray-600 rounded px-3 py-2 bg-gray-800 text-gray-300" required>
+            <input type="submit" value="Add Type" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        </form>
 
 
         <!-- Add New Workout Section -->
@@ -43,11 +43,11 @@
             <form id="addWorkoutForm" action="/{{ instance_name }}/add_workout" method="post" class="flex flex-col md:flex-row gap-2">
                 <input type="text" id="newWorkoutName" name="workoutName" placeholder="WorkoutType (str)" class="flex-1 border border-gray-600 rounded px-3 py-2 bg-gray-800 text-gray-300" required>
                 <input type="number" id="newWorkoutIncrement" placeholder="default increment (number)" name="workoutIncrement" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
-                <select id="workoutType" name="workoutType" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-gray-300">
+                <select id="newWorkoutType" name="workoutType" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-gray-300">
 
                     <option value="">Select Workout Type</option>
                     {% for workouttype in workouttypes %}
-                        <option value="workoutype.id">{{workouttype.name}}</option>
+                        <option value="{{workouttype.id}}">{{workouttype.name}}</option>
                     {% endfor %}
                 </select>
                 <input type="submit" value="Add Workout" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded cursor-pointer self-start md:self-auto">
@@ -83,15 +83,14 @@
                         <input type="submit" value="Delete {{ workout.name }}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer self-start md:self-auto">
                     </form>
                     <form action="/{{ instance_name }}/edit_workout/{{ workout.id }}" method="post" class="flex flex-col md:flex-row gap-2">
-                        <input type="text" name="workoutName" value="{{ workout.name }}" class="flex-1 border border-gray-600 rounded px-3 py-2 bg-gray-800 text-gray-300" required>
-                        <input type="number" name="workoutIncrement" value="{{ workout.inkrement }}" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
+                        <input type="number" name="workoutIncrement" value="{{ workout.increment }}" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
                         <select id="workoutType" name="workoutType" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-gray-300">
                             <option value="">Select Workout Type</option>
                             {% for workouttype in workouttypes %}
-                            alert("{{workouttype.id}} == {{workout.workout_type}}")
-                                <option value="{{ workouttype.id }}" {% if workouttype.id == workout.workout_type %}selected{% endif %}>{{ workouttype.name }}</option>
+                                <option value="{{ workouttype.id }}" {% if workouttype.id == workout.workout_type_id %}selected{% endif %}>{{ workouttype.name }}</option>
                             {% endfor %}
                         </select>
+
                         <input type="submit" value="Update" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer self-start md:self-auto">
                     </form>
 

@@ -20,18 +20,39 @@
                 Settings
             </button>
         </div>
-
-        <!-- Workout Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for workoutType in workouttypes %}
+                <div id="workout-type-item-{{ workoutType.id }}">
+                    <button type="button" @click="window.location.href='/{{ instance_name }}/{{workoutType.id}}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
+                        {{ workoutType.name }}
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+                <!-- Workout Buttons -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {% for workout in workouts %}
                 <div id="workout-item-{{ workout.id }}">
-                    <button type="button" @click="selectedExercise = '{{ workout.name }}'; showExerciseForm = true" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
+                    <button type="button" @click="selectedExercise = '{{ workout.name }}'; showExerciseForm = true; scrollToForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
                         {{ workout.name }}
                     </button>
                 </div>
             {% endfor %}
         </div>
 
+        <!-- Workout Buttons
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for workout in workouts %}
+                {% if workout.type == selectedWorkoutType %}
+                    <div id="workout-item-{{ workout.id }}">
+                        <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300 ease-in-out">
+                            {{ workout.name }}
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+-->
         <!-- Exercise Form -->
         <div x-show="showExerciseForm" class="mt-4 p-4 bg-gray-700 rounded shadow-lg">
             <h2 class="text-lg font-semibold" x-text="selectedExercise"></h2>
@@ -40,7 +61,7 @@
                 <div class="mb-3">
                     <label for="weight" class="font-bold">Weight (kg):</label>
                     <div class="flex items-center">
-                        <input type="number" id="weight" name="weight" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" required step="5">
+                        <input type="number" id="weight" name="weight" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" required step="5" onclick="this.value=''">
                         <div class="ml-2">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <button type="button" @click="increment('weight')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded">+</button>
@@ -53,7 +74,7 @@
                 <div class="mb-3">
                     <label for="reps" class="font-bold">Reps:</label>
                     <div class="flex items-center">
-                        <input type="number" id="reps" name="reps" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
+                        <input type="number" id="reps" name="reps" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required onclick="this.value=''">
                         <div class="ml-2">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <button type="button" @click="increment('reps')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded">+</button>
@@ -66,7 +87,7 @@
                 <div class="mb-3">
                     <label for="rpe" class="font-bold">RPE:</label>
                     <div class="flex items-center">
-                        <input type="number" id="rpe" name="rpe" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
+                        <input type="number" id="rpe" name="rpe" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required onclick="this.value=''">
                         <div class="ml-2">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <button type="button" @click="increment('rpe')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded">+</button>

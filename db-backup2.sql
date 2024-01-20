@@ -51,8 +51,8 @@ DROP TABLE IF EXISTS `workout`;
 CREATE TABLE `workout` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(80) NOT NULL,
-  `inkrement` int NOT NULL,
-  `kind_of_workout` int NOT NULL,
+  `increment` int NOT NULL,
+  `workout_type_id` int NOT NULL,
   `instance_name` varchar(80) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
@@ -102,4 +102,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-14 15:47:55
+-- Dump completed on 2024-01-14 16:34:22

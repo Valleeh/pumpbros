@@ -6,6 +6,20 @@ function showForm(exerciseName) {
   document.getElementById('exerciseForm').style.display = 'block';
   window.scrollTo(0, document.body.scrollHeight); // Scroll to the form
 }
+function scrollToForm() {
+    setTimeout(() => {
+        const formElement = document.querySelector('#workoutForm');
+        if (formElement) {
+            if ('scrollBehavior' in document.documentElement.style) {
+                // If smooth scroll is supported
+                formElement.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                // Fallback for browsers that don't support smooth scroll
+                formElement.scrollIntoView();
+            }
+        }
+    }, 300);
+}
 function prefillWorkoutForm(buddy) {
     var exercise = document.getElementById('exerciseInput').value;
     fetch(`/${window.instanceName}/get_latest_workout?exercise=${exercise}&buddy=${buddy}`)
@@ -13,6 +27,7 @@ function prefillWorkoutForm(buddy) {
     .then(data => {
         document.getElementById('weight').value = data.weight;
         document.getElementById('reps').value = data.reps;
+        document.getElementById('rpe').value = data.rpe;
         // Additional code to prefill exercise and buddy, if needed
     })
     .catch(error => {

@@ -45,6 +45,16 @@ class WorkoutKind(db.Model):
     name = db.Column(db.String(80), nullable=False)
     instance_name = db.Column(db.String(80), nullable=False)  # New column for instance name
 
+class SetType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    one_rep_max_percentage = db.Column(db.Float, nullable=False)
+    reps = db.Column(db.Integer, nullable=False)
+    instance_name = db.Column(db.String(80), nullable=False)  # New column for instance name
+
+    def __repr__(self):
+        return f'<SetType {self.name}>'
+
 import logging
 
 
@@ -125,11 +135,12 @@ def index_workout(instance_name, workout_type='all'):
                 print(f"workouts is {workouts}", file=sys.stderr)
             workouttypes = WorkoutKind.query.filter_by(instance_name=instance_name).all()
             buddies = PumpBuddy.query.filter_by(instance_name=instance_name).all()
+            settypes = SetType.query.filter_by(instance_name=instance_name).all()
         except Exception as e:
             print(f"Error retrieving data: {e}", file=sys.stderr)
             workouts, workouttypes, buddies = [], [], []
 
-        return render_template('index.html', workouts=workouts, buddies=buddies, workouttypes=workouttypes, instance_name=instance_name)
+        return render_template('index.html', workouts=workouts, buddies=buddies, workouttypes=workouttypes, instance_name=instance_name, settypes=settypes)
 
     except Exception as e:
         print(f"Error in index function: {e}", file=sys.stderr)
@@ -161,7 +172,8 @@ def settings(instance_name):
     workouttypes = WorkoutKind.query.filter_by(instance_name=instance_name).all()
     workouts = Workout.query.filter_by(instance_name=instance_name).all()
     buddies = PumpBuddy.query.filter_by(instance_name=instance_name).all()
-    return render_template('settings.html', workouts=workouts, buddies=buddies, workouttypes=workouttypes, instance_name=instance_name)
+    settypes = SetType.query.filter_by(instance_name=instance_name).all()
+    return render_template('settings.html', workouts=workouts, buddies=buddies, workouttypes=workouttypes, instance_name=instance_name, settypes=settypes)
 
 @app.route('/<instance_name>/remove_workout', methods=['POST'])
 def remove_workout(instance_name):
@@ -236,37 +248,39 @@ def add_workout(instance_name):
 
 import logging
 
-@app.route('/<instance_name>/get_latest_workout', methods=['GET'])
-def get_latest_workout(instance_name):
+@app.route('/<instance_name>/get_max_workout', methods=['GET'])
+def get_max_workout(instance_name):
     exercise_query = request.args.get('exercise')
     print(f"exercise_query: {exercise_query}", file=sys.stderr)
     buddy_query = request.args.get('buddy')
     print(f"buddy_query: {buddy_query}", file=sys.stderr)
-    highest_weight = 0
+    settype = request.args.get('settypes')
+    print(f"settypes: {settype}", file=sys.stderr)
+
+    highest_one_rep_max = 0
     latest_workout = None
     latest_timestamp = None
     csv_file = f'data_{instance_name}.csv'
-    print(f"Data: {csv_file}", file=sys.stderr)
 
     try:
         with open(csv_file, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
                 try:
-                    print(f"row: {row}", file=sys.stderr)
                     timestamp, exercise, weight_str, reps_str, buddy, rpe_str = row
                     if exercise == exercise_query and buddy == buddy_query:
-                        weight = float(weight_str)
-                        # Update only if this row has a higher weight or equal weight but more recent
-                        if weight > highest_weight or (weight == highest_weight and timestamp > latest_timestamp):
-                            highest_weight = weight
+                        weight = int(weight_str)
+                        reps = int(reps_str)  # Define reps here from reps_str
+                        one_rep_max = weight * (1 + reps / 30.0)
+
+                        if one_rep_max > highest_one_rep_max or (one_rep_max == highest_one_rep_max and timestamp > latest_timestamp):
+                            highest_one_rep_max = one_rep_max
                             latest_timestamp = timestamp
-                            calculated_weight, calculated_reps = calc_workout(weight, int(reps_str))
                             latest_workout = {
                                 'timestamp': timestamp,
                                 'exercise': exercise,
-                                'weight': calculated_weight,
-                                'reps': calculated_reps,
+                                'weight': weight,
+                                'reps': reps,
                                 'buddy': buddy,
                                 'rpe': int(rpe_str)
                             }
@@ -284,6 +298,150 @@ def get_latest_workout(instance_name):
     except Exception as e:
         logging.error(f"Error reading file {csv_file}: {e}")
         return "An error occurred processing the request", 500
+
+@app.route('/<instance_name>/get_latest_workout', methods=['GET'])
+def get_latest_workout(instance_name):
+                    if exercise == exercise_query and buddy == buddy_query and timestamp > latest_timestamp:
+                        latest_timestamp = timestamp
+                        latest_workout = {
+                                'timestamp': timestamp,
+                                'exercise': exercise,
+                                'weight': int(weight_str),
+                                'reps': int(reps_str),
+                                'buddy': buddy,
+                                'rpe': int(rpe_str)
+                            }
+
+
+@app.route('/<instance_name>/calculate_workout', methods=['GET'])
+def calculate_workout(instance_name):
+    exercise_query = request.args.get('exercise')
+    print(f"exercise_query: {exercise_query}", file=sys.stderr)
+    buddy_query = request.args.get('buddy')
+    print(f"buddy_query: {buddy_query}", file=sys.stderr)
+    settype = request.args.get('settypes')
+    print(f"settypes: {settype}", file=sys.stderr)
+
+    highest_one_rep_max = 0
+    latest_workout = None
+    calculated_weight = 0
+    calculated_reps = 0
+    latest_timestamp = datetime.min
+    csv_file = f'data_{instance_name}.csv'
+
+    try:
+        with open(csv_file, 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                try:
+                    timestamp_str, exercise, weight_str, reps_str, buddy, rpe_str = row
+                except ValueError as e:
+                    logging.error(f"Error processing row {row}: {e}")
+                    timestamp_str, exercise, weight_str, reps_str, buddy = row
+
+                if exercise == exercise_query and buddy == buddy_query:
+                    weight = int(weight_str)
+                    reps = int(reps_str)  # Define reps here from reps_str
+                    one_rep_max = weight * (1 + reps / 30.0)
+                    print(f"one_rep_max: {one_rep_max}, ", file=sys.stderr)
+                    timestamp = datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S.%f')
+                    if settype == "Latest":
+                        print(f"timestamptype: {type(timestamp)} latesttimestamptype: {type(latest_timestamp)} ", file=sys.stderr)
+                        if timestamp > latest_timestamp:
+                            print(f"one_rep_max: {one_rep_max}, ", file=sys.stderr)
+                            latest_timestamp = timestamp
+                            calculated_weight = weight
+                            calculated_reps = reps
+                            print(f"latest: {calculated_weight}kg, calculated_reps", file=sys.stderr)
+                    else :
+                        if one_rep_max > highest_one_rep_max or (one_rep_max == highest_one_rep_max and timestamp > latest_timestamp):
+                            highest_one_rep_max = one_rep_max
+                            latest_timestamp = timestamp
+                            error, calculated_weight, calculated_reps = calc_workout(weight, reps, settype,instance_name)
+                            if settype == "Max" or (error == 404):
+                                calculated_weight, calculated_reps = weight, reps
+
+
+
+    except FileNotFoundError:
+        return f"CSV file not found: {csv_file}", 404
+    except Exception as e:
+        logging.error(f"Error reading file {csv_file}: {e}")
+        logging.error(f"Error reading row: {row}")
+        return "An error occurred processing the request", 500
+    latest_workout = {
+                                'timestamp': timestamp_str,
+                                'exercise': exercise,
+                                'weight': calculated_weight,
+                                'reps': calculated_reps,
+                                'buddy': buddy,
+                                'rpe': int(rpe_str)
+                            }
+    if latest_workout:
+        return jsonify(latest_workout)
+    else:
+        return "No matching workout found", 404
+
+def calc_workout(weight, reps, settype, instance_name):
+    # Query the set type from the database using both settype and instance_name
+    set_type = SetType.query.filter_by(name=settype, instance_name=instance_name).first()
+    if not set_type:
+        return 404,0,0
+
+    one_rep_max = weight * (1 + reps / 30.0)  # Calculate the 1RM
+    calculated_weight = one_rep_max / (1 + set_type.reps / 30.0)
+    return 0, int(calculated_weight), set_type.reps
+
+@app.route('/<instance_name>/add_set_type', methods=['POST'])
+def add_set_type(instance_name):
+    try:
+        # Retrieve and log form data
+        set_name = request.form.get('setName')
+        set_percentage = request.form.get('setPercentage')
+        set_reps = request.form.get('setReps')
+
+        print(f"Adding set type: Name={set_name}, 1RM Percentage={set_percentage}, Reps={set_reps}, Instance={instance_name}", file=sys.stderr)
+
+        # Validate and convert data as necessary
+        if not set_name:
+            raise ValueError("Set type name is missing")
+        if not set_percentage.replace('.', '', 1).isdigit():
+            raise ValueError("1RM percentage is not a valid number")
+        if not set_reps.isdigit():
+            raise ValueError("Number of reps is not a valid number")
+
+        set_percentage = float(set_percentage)
+        set_reps = int(set_reps)
+
+        # Create and add new set type
+        new_set_type = SetType(name=set_name,
+                               one_rep_max_percentage=set_percentage,
+                               reps=set_reps,
+                               instance_name=instance_name)
+        db.session.add(new_set_type)
+        db.session.commit()
+
+        print("Set type added successfully", file=sys.stderr)
+        return make_response(redirect(url_for('settings', instance_name=instance_name)))
+
+    except Exception as e:
+        # Log any exceptions that occur
+        print(f"Error adding set type: {e}", file=sys.stderr)
+        return "An error occurred: " + str(e), 500
+
+@app.route('/<instance_name>/remove_set_type', methods=['POST'])
+def remove_set_type(instance_name):
+    set_type_id = request.form.get('setTypeId')
+    if set_type_id:
+        set_type_to_delete = SetType.query.filter_by(id=set_type_id, instance_name=instance_name).first()
+        if set_type_to_delete:
+            db.session.delete(set_type_to_delete)
+            db.session.commit()
+            response = make_response(redirect(url_for('settings', instance_name=instance_name)))
+            return response
+        else:
+            return "Set Type not found", 404
+    return "No Set Type ID provided", 400
 
 
 @app.route('/<instance_name>/submit_workout', methods=['POST'])
@@ -311,6 +469,8 @@ def view_csv(instance_name):
     with open(csv_file, mode='r') as file:
         reader = csv.reader(file)
         data_list = [row for row in reader]
+    # Reverse the order of data_list
+    data_list.reverse()
     return render_template('view_csv.html', data_list=data_list, instance_name=instance_name)
 
 @app.route('/<instance_name>/delete_entry/<int:index>')
@@ -328,21 +488,6 @@ def delete_entry(instance_name, index):
         return view_csv(instance_name)
     else:
         return "Invalid index", 404
-def calc_workout(weight, reps):
-    # Convert to appropriate types if necessary
-    weight = int(weight)
-    reps = int(reps)
-    one_rep_max = weight * (1 + reps / 30.0)
-    if reps > 8:
-        weight += 10  # Increase weight
-        reps = 6      # Set reps to 6
-
-    # Log messages - convert numbers to strings for concatenation
-    print("reps: " + str(reps), file=sys.stderr)
-    print("weight: " + str(weight), file=sys.stderr)
-
-    # Return numeric values
-    return weight, reps
 
 @app.route('/<instance_name>/download_csv')
 def download_csv(instance_name):
@@ -360,5 +505,3 @@ def download_csv(instance_name):
 
     except FileNotFoundError:
         return "File not found", 404
-
-

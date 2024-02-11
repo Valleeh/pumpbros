@@ -12,6 +12,12 @@
 
 </head>
 <body class="bg-gray-800 text-white">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        var instanceName = "{{ instance_name }}";
+        let globalSQLData = null;
+
+    </script>
 
     <main class="p-4" x-data="{ selectedExercise: null, showExerciseForm: false }">
         <!-- Settings Button -->
@@ -58,6 +64,7 @@
             <h2 class="text-lg font-semibold" x-text="selectedExercise"></h2>
             <form id="workoutForm" @submit.prevent="submitWorkout" class="mt-4">
                 <input type="hidden" id="exerciseInput" name="exercise" x-model="selectedExercise">
+                <input type="hidden" id="training_protocol_input" name="training_protocol">
                 <div class="mb-3">
                     <label for="weight" class="font-bold">Weight (kg):</label>
                     <div class="flex items-center">
@@ -96,22 +103,36 @@
                         </div>
                     </div>
                 </div>
+<div class="mb-3">
+    <label class="font-bold">Pump Buddy:</label>
+    <div>
+        {% for buddy in buddies %}
+            {{ buddy.name }}
+            <div class="flex flex-row gap-2 mb-2">
+                <!-- Dynamically create buttons for each set type -->
+                {% for settype in settypes %}
+                    <button type="button" @click="prefillWorkoutForm('{{ buddy.name }}', '{{ settype.name }}')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded" >
+                        {{ settype.name }}
+                    </button>
 
-                <div class="mb-3">
-                    <label class="font-bold">Pump Buddy:</label>
-                    <div>
-                        {% for buddy in buddies %}
-                            <div class="flex flex-row gap-2 mb-2">
-                                <button type="button" @click="prefillWorkoutForm('{{ buddy.name }}')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded w-1/2">
-                                    Prefill {{ buddy.name }}
-                                </button>
-                                <button type="button" @click="submitWorkoutWithBuddy('{{ buddy.name }}')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded w-1/2">
-                                    {{ buddy.name }}
-                                </button>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                {% endfor %}
+
+            </div>
+            <div class="flex flex-row gap-2 mb-4">
+                <button type="button" @click="submitWorkoutWithBuddy('{{ buddy.name }}')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded w-1/2">
+                    {{ buddy.name }}
+                </button>
+                <button type="button" @click="prefillWorkoutForm('{{ buddy.name }}', 'Max')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded" >
+                    Max
+                </button>
+                <button type="button" @click="prefillWorkoutForm('{{ buddy.name }}', 'Latest')" class="text-lg bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded" >
+                    Latest
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
 
 
 
@@ -119,10 +140,7 @@
             </form>
         </div>
     </main>
-    <script>
-        var instanceName = "{{ instance_name }}";
-    </script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
 
 
 

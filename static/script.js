@@ -20,7 +20,25 @@ function scrollToForm() {
         }
     }, 300);
 }
-function prefillWorkoutForm(buddy) {
+
+
+function prefillWorkoutForm(buddy,training_protocol) {
+    var exercise = document.getElementById('exerciseInput').value;
+    fetch(`/${window.instanceName}/calculate_workout?exercise=${encodeURIComponent(exercise)}&buddy=${encodeURIComponent(buddy)}&settypes=${encodeURIComponent(training_protocol)}`)
+        .then(response => response.json())
+        .then(data => {
+            // Common prefill for all workout types
+            document.getElementById('weight').value = data.weight;
+            document.getElementById('reps').value = data.reps;
+            document.getElementById('rpe').value = 10;
+        })
+        .catch(error => {
+            console.error('Error fetching latest workout:', error);
+        });
+}
+
+
+function prefillWorkoutForm1(buddy) {
     var exercise = document.getElementById('exerciseInput').value;
     fetch(`/${window.instanceName}/get_latest_workout?exercise=${exercise}&buddy=${buddy}`)
     .then(response => response.json())

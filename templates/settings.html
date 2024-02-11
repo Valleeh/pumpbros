@@ -53,6 +53,35 @@
                 <input type="submit" value="Add Workout" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded cursor-pointer self-start md:self-auto">
             </form>
         </section>
+        <!-- Add New Set Type Section -->
+        <section id="addSetType" class="mb-4">
+            <h2 class="text-xl font-bold mb-2">Add a New Set Type</h2>
+            <form id="addSetTypeForm" action="/{{ instance_name }}/add_set_type" method="post" class="flex flex-col md:flex-row gap-2">
+                <input type="text" id="newSetTypeName" name="setName" placeholder="Set Type Name" class="flex-1 border border-gray-600 rounded px-3 py-2 bg-gray-800 text-gray-300" required>
+
+                <input type="number" id="newSetTypePercentage" placeholder="1RM Percentage (e.g., 70 for 70%)" name="setPercentage" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" step="0.1" required>
+
+                <input type="number" id="newSetTypeReps" placeholder="Number of Reps" name="setReps" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 w-full" pattern="\d*" step="1" required>
+
+                <input type="submit" value="Add Set Type" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded cursor-pointer self-start md:self-auto">
+            </form>
+        </section>
+<section>
+    <h2 class="text-xl font-bold mb-2">Delete Set Type</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for set_type in settypes %}
+            <div class="flex flex-col mb-4 bg-gray-800 p-4 rounded">
+                <span class="font-bold">Name: {{ set_type.name }}</span>
+                <span>1RM Percentage: {{ set_type.one_rep_max_percentage }}%</span>
+                <span>Reps: {{ set_type.reps }}</span>
+                <form action="/{{ instance_name }}/remove_set_type" method="post" class="mt-2">
+                    <input type="hidden" name="setTypeId" value="{{ set_type.id }}">
+                    <input type="submit" value="Delete {{ set_type.name }}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</section>
 
         <!-- Add Pump Buddy Section -->
         <section class="mb-4">

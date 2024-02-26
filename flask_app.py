@@ -475,19 +475,26 @@ def view_csv(instance_name):
 
 @app.route('/<instance_name>/delete_entry/<int:index>')
 def delete_entry(instance_name, index):
-    csv_file = f'data_{instance_name}.csv'  # Unique file for each instance
+    csv_file = f'data_{instance_name}.csv'
     rows = []
     with open(csv_file, mode='r') as file:
         reader = csv.reader(file)
         rows = [row for row in reader]
+
+    # Reverse the rows to match the order in view_csv
+    rows.reverse()
+
     if 0 <= index < len(rows):
         del rows[index]
+        # Reverse back before writing to CSV
+        rows.reverse()
         with open(csv_file, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(rows)
         return view_csv(instance_name)
     else:
         return "Invalid index", 404
+
 
 @app.route('/<instance_name>/download_csv')
 def download_csv(instance_name):
